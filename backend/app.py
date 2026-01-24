@@ -15,5 +15,10 @@ def get_demo_data():
         "features": ["React Frontend", "Flask Backend", "CORS Enabled", "GitHub Integrated"]
     }), 200
 
+@app.route('/api/login', methods=['POST'])
+def login():
+    # Simple mock login for demonstration
+    return jsonify({"status": "success", "message": "User logged in successfully!"}), 200
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
