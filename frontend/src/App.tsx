@@ -26,6 +26,24 @@ function App() {
       })
   }, [])
 
+  const handleLogin = () => {
+    fetch('http://localhost:5000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: 'demo', password: 'password' }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert(`Backend says: ${data.message}`)
+      })
+      .catch(err => {
+        console.error("Login failed:", err)
+        alert("Failed to connect to login endpoint.")
+      })
+  }
+
   return (
     <>
       <div>
@@ -37,8 +55,11 @@ function App() {
         </a>
       </div>
       <h1>Vite + React + Flask</h1>
-      
+
       <div className="card">
+        <button onClick={handleLogin} style={{ backgroundColor: '#646cff', color: 'white', marginBottom: '1rem' }}>
+          Test Login Endpoint
+        </button>
         <h3>Backend Status:</h3>
         {loading ? (
           <p>Loading backend data...</p>
