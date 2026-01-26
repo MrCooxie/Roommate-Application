@@ -1,13 +1,29 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Login attempt:', { email, password });
-        // This will be connected to the backend endpoint later
+        try {
+            const response = await fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+                navigate('/');
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
@@ -75,6 +91,7 @@ export default function Login() {
                     </div>
 
                     <button
+                        onClick={handleSubmit}
                         type="submit"
                         className="group relative flex w-full justify-center rounded-lg bg-indigo-600 px-3 py-3 text-sm font-semibold text-white transition-all hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 shadow-lg shadow-indigo-200"
                     >
