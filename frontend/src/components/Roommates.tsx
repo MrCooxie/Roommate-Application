@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { AirtableRecord } from "../pages/Home";
 
 interface RoommatesProps {
@@ -5,6 +6,7 @@ interface RoommatesProps {
 }
 
 export default function Roommates({ data }: RoommatesProps) {
+    const navigate = useNavigate();
 
     if (data.length === 0) {
         return (
@@ -42,7 +44,8 @@ export default function Roommates({ data }: RoommatesProps) {
                     return (
                         <div
                             key={record.id}
-                            className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
+                            onClick={() => navigate(`/roommate/${record.id}`, { state: { record } })}
+                            className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                         >
                             {/* Name & Age */}
                             <div className="pt-6 px-6 w-full">

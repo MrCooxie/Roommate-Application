@@ -23,7 +23,7 @@ export default function Home() {
     const handleTabChange = async (tab: 'Roommates' | 'Apartments') => {
         setActiveTab(tab);
         try {
-            const response = await fetch(`http://localhost:5000/api/${tab.toLowerCase()}`);
+            const response = await fetch(`http://localhost:5001/api/${tab.toLowerCase()}`);
             if (!response.ok) {
                 throw new Error(`Failed to fetch ${tab}`);
             }

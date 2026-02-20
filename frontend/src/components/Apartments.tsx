@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { AirtableRecord } from "../pages/Home";
 
 interface ApartmentsProps {
@@ -5,6 +6,7 @@ interface ApartmentsProps {
 }
 
 export default function Apartments({ data }: ApartmentsProps) {
+    const navigate = useNavigate();
 
     if (data.length === 0) {
         return (
@@ -36,7 +38,8 @@ export default function Apartments({ data }: ApartmentsProps) {
                     return (
                         <div
                             key={record.id}
-                            className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300"
+                            onClick={() => navigate(`/apartment/${record.id}`, { state: { record } })}
+                            className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 cursor-pointer"
                         >
                             {/* Address */}
                             <div className="pt-6 px-6 w-full">
