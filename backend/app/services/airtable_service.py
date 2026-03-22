@@ -37,8 +37,15 @@ class AirtableService:
     def get_user(self, id):
         return self.get_table_records("Users", id)
 
+    def get_owner(self, id):
+        return self.get_table_records("Owners", id)
+
     def get_room(self, id):
-        return self.get_table_records("Housing", id)
+        info = self.get_table_records("Housing", id)
+        info["fields"]["RentLabel"] = str(info["fields"]["Rent"])+" / per month"
+        info["fields"]["OwnerName"] = self.get_owner(info["fields"]["Owners"][0])["fields"]["Name"]
+        info["fields"]["OwnerPFP"] = self.get_owner(info["fields"]["Owners"][0])["fields"]["Profile Picture (from Owners)"]
+        return info
 
     def get_users(self):
         return self.get_table_records("Users")

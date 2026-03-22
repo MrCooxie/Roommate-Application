@@ -5,6 +5,7 @@ export interface ApartmentFields {
     Location?: string;
     Price?: string | number;
     Rent?: string | number;
+    RentLabel?: string;
     'Price per person'?: string | number;
     Sqft?: string | number;
     'Square footage'?: string | number;
@@ -15,8 +16,8 @@ export interface ApartmentFields {
     Bathrooms?: string | number;
     Description?: string;
     images?: { url: string }[];
-    'Owner name'?: string;
-    'Owner avatar'?: { url: string }[];
+    OwnerName?: string;
+    OwnerPFP?: { url: string }[];
     [key: string]: any;
 }
 
