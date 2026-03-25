@@ -28,6 +28,7 @@ def create_app(config_name='dev'):
         app.config['AIRTABLE_TOKEN'],
         app.config['AIRTABLE_BASE_ID']
     )
+    print(app.airtable.get_user("recIUKSm6s6FdCawO"))
     
     # Inject AirtableService into AuthService
     app.auth = AuthService(app.airtable)
