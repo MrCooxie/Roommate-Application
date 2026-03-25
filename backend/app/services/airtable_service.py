@@ -1,4 +1,6 @@
 from pyairtable import Api
+import random
+from compatibility import Algoritm
 
 class AirtableService:
     def __init__(self, token, base_id):
@@ -34,17 +36,50 @@ class AirtableService:
             print(f"Error fetching Airtable records: {e}")
             return None
 
-    def get_user(self, id):
-        return self.get_table_records("Users", id)
+    def get_interest(self, id):
+        record = self.get_table_records("Interests", id)
+        record["fields"].pop("Users")
+        return record["fields"]
+
+    def get_user(self, id, user=None):
+        '''export type Roommate = {
+        compatibility: number;
+        };'''
+
+        info = self.get_table_records("Users", id)
+        fields = info["fields"]
+
+        fields["name"] = str(fields["firstName"])+" "+str(fields["lastName"])
+        fields["university"] = fields.pop("school")
+        fields["image"] = fields.pop("profile picture")
+        fields["interests"] = []
+        for id in fields["userInterests"]:
+            fields["interests"].append(self.get_interest(id))
+
+        # siin peaks võrdlema kasutava kasutajaga *algoritm*
+        if user:
+            userinfo = self.get_table_records("Users", user)
+            userint = userinfo["fields"]["userInterests"]
+            fields["compatibility"] = Algoritm(userint, fields["userInterests"])
+        else:
+            fields["compatibility"] = 0
+
+        fields["compatibility"] = random.randint(0,100) #if have actual *algoritm* remove this
+
+        info["fields"] = fields
+        return info
 
     def get_owner(self, id):
         return self.get_table_records("Owners", id)
 
     def get_room(self, id):
         info = self.get_table_records("Housing", id)
-        info["fields"]["RentLabel"] = str(info["fields"]["Rent"])+" / per month"
-        info["fields"]["OwnerName"] = self.get_owner(info["fields"]["Owners"][0])["fields"]["Name"]
-        info["fields"]["OwnerPFP"] = self.get_owner(info["fields"]["Owners"][0])["fields"]["Profile Picture (from Owners)"]
+        fields = info["fields"]
+        fields["priceLabel"] = str(fields["priceValue"])+" / per month"
+        fields["OwnerName"] = self.get_owner(fields["Owners"][0])["fields"]["Name"]
+        fields["ownerAvatar"] = self.get_owner(fields["Owners"][0])["fields"]["Profile Picture (from Owners)"]
+
+        info["fields"] = fields
         return info
 
     def get_users(self):
