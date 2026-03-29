@@ -1,6 +1,5 @@
 from pyairtable import Api
 import random
-from compatibility import Algoritm
 
 class AirtableService:
     def __init__(self, token, base_id):
@@ -38,11 +37,11 @@ class AirtableService:
 
     def get_interest(self, id):
         record = self.get_table_records("Interests", id)
-        record["fields"].pop("Users")
         record["fields"]["id"] = id
         return record["fields"]
 
     def get_user(self, id, user=None):
+        from .compatibility import Algoritm
         info = self.get_table_records("Users", id)
         fields = info["fields"]
 
@@ -51,7 +50,7 @@ class AirtableService:
         fields["image"] = fields.pop("profile picture")
         fields["interests"] = []
         for id in fields["userInterests"]:
-            fields["interests"].append(self.get_interest(id))
+            fields["interests"].append(self.get_interest(id).pop("Users"))
 
         # siin peaks võrdlema kasutava kasutajaga *algoritm*
         if user:
@@ -61,7 +60,7 @@ class AirtableService:
         else:
             fields["compatibility"] = 0
 
-        fields["compatibility"] = random.randint(0,100) #if have actual *algoritm* remove this
+        #fields["compatibility"] = random.randint(0,100) #if have actual *algoritm* remove this
 
         info["fields"] = fields
         return info
