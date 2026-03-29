@@ -39,13 +39,10 @@ class AirtableService:
     def get_interest(self, id):
         record = self.get_table_records("Interests", id)
         record["fields"].pop("Users")
+        record["fields"]["id"] = id
         return record["fields"]
 
     def get_user(self, id, user=None):
-        '''export type Roommate = {
-        compatibility: number;
-        };'''
-
         info = self.get_table_records("Users", id)
         fields = info["fields"]
 
