@@ -16,3 +16,8 @@ def get_housing():
     if records:
         return jsonify(records), 200
     return jsonify({"error": "Failed to fetch housing"}), 500
+
+@users_bp.route("/register", methods=["POST"])
+def register(data):
+    data["userInterests"] = data.pop("preferences")
+    return current_app.airtable.create_user_records(data)
