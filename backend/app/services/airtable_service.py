@@ -16,7 +16,25 @@ class AirtableService:
             return None
 
     def create_user_records(self, data):
-        return self.create_table_records("Users", data)
+        userInterests = []
+        newInterests = []
+        for interest in data.pop("interests"):
+            interest = interest.lower()
+            inInterests = False
+            for record in self.get_table_records("Interests"):
+                if interest in record["fields"]["label"]:
+                    userInterests.append(record["id"])
+                    inInterests = True
+                    break
+            if not inInterests:
+                new_record = self.create_table_records("Interests", {"label": interest})
+                userInterests.append(new_record["id"])
+                newInterests.append(new_record["id"])
+        data["userInterests"] = userInterests
+        new_user = self.create_table_records("Users", data)
+        for id in newInterests:
+            self.update_interest_record({"Users": new_user["id"]}, id)
+        return new_user
 
     def create_room_records(self, data):
         return self.create_table_records("Housing", data)
@@ -56,7 +74,7 @@ class AirtableService:
         if user:
             userinfo = self.get_table_records("Users", user)
             userint = userinfo["fields"]["userInterests"]
-            fields["compatibility"] = Algoritm(userint, fields["userInterests"])
+            fields["compatibility"] = Algoritm(self, userint, fields["userInterests"])
         else:
             fields["compatibility"] = 0
 
@@ -108,6 +126,9 @@ class AirtableService:
 
     def update_room_record(self, updates, record_id, replace=False, typecast=True):
         return self.update_table_records("Housing", updates, record_id, replace, typecast)
+
+    def update_interest_record(self, updates, record_id, replace=False, typecast=True):
+        return self.update_table_records("Interests", updates, record_id, replace, typecast)
 
     #DELETING
     def delete_table_records(self, table_name, id):
