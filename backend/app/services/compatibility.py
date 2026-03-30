@@ -1,17 +1,12 @@
 import math
-from flask import current_app
 
-def get_airtable_client():
-    return current_app.airtable
-
-def Algoritm(userInterests, personInterests):
-    at = get_airtable_client()
+def Algoritm(airtable, userInterests, personInterests):
     user = []
     person = []
     for id in userInterests:
-        user.append(at.get_interest(id))
+        user.append(airtable.get_interest(id))
     for id in personInterests:
-        person.append(at.get_interest(id))
+        person.append(airtable.get_interest(id))
 
     userScore = 0
     personScore = 0
